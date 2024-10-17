@@ -1,11 +1,12 @@
 // Assign beastify() as a listener for messages from the extension.
-chrome.runtime.onMessage.addListener(beastify);
+console.log("beastify.js foi injetado e está pronto para receber mensagens.");
 
-function beastify(request, sender, sendResponse) {
+browser.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+  console.log("Mensagem recebida:", request);
   removeEverything();
   insertBeast(beastNameToURL(request.beast));
-  chrome.runtime.onMessage.removeListener(beastify);
-}
+});
+
 
 function removeEverything() {
   while (document.body.firstChild) {
@@ -24,10 +25,10 @@ function insertBeast(beastURL) {
 function beastNameToURL(beastName) {
   switch (beastName) {
     case "Frog":
-      return chrome.extension.getURL("beasts/frog.jpg");
+      return browser.runtime.getURL("beasts/frog.jpg");
     case "Snake":
-      return chrome.extension.getURL("beasts/snake.jpg");
+      return browser.runtime.getURL("beasts/snake.jpg");
     case "Turtle":
-      return chrome.extension.getURL("beasts/turtle.jpg");
+      return browser.runtime.getURL("beasts/turtle.jpg");
   }
 }
