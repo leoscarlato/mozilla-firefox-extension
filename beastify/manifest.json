@@ -1,0 +1,37 @@
+{
+  "manifest_version": 2,
+  "name": "Beastify",
+  "version": "1.0",
+
+  "description": "Substitui o conteúdo da página atual por uma imagem de um animal.",
+
+  "applications": {
+    "gecko": {
+      "id": "beastify@mozilla.org"
+    }
+  },
+
+  "permissions": ["activeTab"],
+
+  "browser_action": {
+    "default_icon": {
+      "32": "icons/beasts-32.png",
+      "48": "icons/beasts-48.png"
+    },
+    "default_title": "Beastify",
+    "default_popup": "popup/choose_beast.html"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content_scripts/beastify-content.js"]
+    }
+  ],
+
+  "web_accessible_resources": [
+    "beasts/frog.jpg",
+    "beasts/turtle.jpg",
+    "beasts/snake.jpg"
+  ]
+}
