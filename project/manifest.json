@@ -6,8 +6,8 @@
     "permissions": [
       "webRequest",
       "webRequestBlocking",
-      "cookies",
       "tabs",
+      "cookies",
       "storage",
       "<all_urls>"
     ],
@@ -28,7 +28,7 @@
       "default_icon": {
         "16": "icons/padlock.png"
       },
-      "default_title": "Analisador de Privacidade"
+      "default_title": "Analisador de Privacidade",
+      "default_popup": "popup.html"
     }
   }
-  

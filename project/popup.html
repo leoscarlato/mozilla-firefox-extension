@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="popup.css">
+  <title>Privacy Analyzer</title>
+</head>
+<body>
+  <div id="privacy-popup">
+    <h2>Pontuação de Privacidade: <span id="privacy-score"></span></h2>
+    <div class="category" id="third-party-connections">
+      <div class="category-header">
+        <h3>Conexões de Terceiros: <span id="third-party-count"></span> <span class="dropdown-arrow">&#9660;</span></h3>
+      </div>
+      <ul id="third-party-list" class="hidden"></ul>
+    </div>
+    <div class="category" id="third-party-cookies">
+      <div class="category-header">
+        <h3>Cookies de Terceiros: <span id="third-party-cookies-count"></span></h3>
+      </div>
+      <ul id="third-party-cookies-list" class="hidden"></ul>
+    </div>
+    <div class="category" id="local-storage">
+      <div class="category-header">
+        <h3>Local Storage Items: <span id="local-storage-count"></span> <span class="dropdown-arrow">&#9660;</span></h3>
+      </div>
+      <ul id="local-storage-list" class="hidden"></ul>
+    </div>
+    <div class="category" id="canvas-fingerprinting">
+      <div class="category-header">
+        <h3>Canvas Fingerprinting Detectado: <span id="canvas-fingerprinting-detected"></span></h3>
+      </div>
+    </div>
+    <div class="category" id="hijacking">
+      <div class="category-header">
+        <h3>Hijacking Detectado: <span id="hijacking-detected"></span></h3>
+      </div>
+    </div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

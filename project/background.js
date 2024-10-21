@@ -1,4 +1,5 @@
-let privacyData = {};
+window.privacyData = {};
+window.currentTabId = null;
 
 browser.webRequest.onBeforeRequest.addListener(
   (details) => {
@@ -14,15 +15,14 @@ browser.webRequest.onBeforeRequest.addListener(
           thirdPartyConnections: new Set(),
           hijackingDetected: false,
           canvasFingerprintDetected: false,
-          localStorageUsage: 0,
-          sessionStorageUsage: 0,
+          localStorageUsage: [],
           cookies: {
             firstParty: 0,
             thirdParty: 0,
             sessionCookies: 0,
             persistentCookies: 0
           },
-          privacyScore: 100
+          privacyScore: 10
         };
       }
       privacyData[tabId].thirdPartyConnections.add(requestHost);
@@ -40,36 +40,32 @@ browser.runtime.onMessage.addListener((message, sender) => {
       thirdPartyConnections: new Set(),
       hijackingDetected: false,
       canvasFingerprintDetected: false,
-      localStorageUsage: 0,
-      sessionStorageUsage: 0,
+      localStorageUsage: [],
       cookies: {
         firstParty: 0,
         thirdParty: 0,
         sessionCookies: 0,
         persistentCookies: 0
       },
-      privacyScore: 100
+      privacyScore: 10
     };
   }
 
   if (message.hijackingDetected) {
     privacyData[tabId].hijackingDetected = true;
-    updatePrivacyScore(tabId, 20);
+    updatePrivacyScore(tabId, 2);
   }
 
   if (message.canvasFingerprintDetected) {
     privacyData[tabId].canvasFingerprintDetected = true;
-    updatePrivacyScore(tabId, 15);
+    updatePrivacyScore(tabId, 1.5);
   }
 
   if (message.localStorageUsage !== undefined) {
     privacyData[tabId].localStorageUsage = message.localStorageUsage;
-    updatePrivacyScore(tabId, message.localStorageUsage * 1);
+    updatePrivacyScore(tabId, message.localStorageUsage.length * 0.1);
   }
 
-  if (message.sessionStorageUsage !== undefined) {
-    privacyData[tabId].sessionStorageUsage = message.sessionStorageUsage;
-  }
 });
 
 function updatePrivacyScore(tabId, deduction) {
@@ -78,6 +74,7 @@ function updatePrivacyScore(tabId, deduction) {
   if (privacyData[tabId].privacyScore < 0) {
     privacyData[tabId].privacyScore = 0;
   }
+  privacyData[tabId].privacyScore = parseFloat(privacyData[tabId].privacyScore.toFixed(1));
 }
 
 browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
@@ -114,11 +111,7 @@ browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
         persistentCookies
       };
 
-      updatePrivacyScore(tabId, thirdParty * 2);
-
-      browser.tabs.sendMessage(tabId, {
-        privacyData: privacyData[tabId]
-      });
+      updatePrivacyScore(tabId, thirdParty * 0.2);
     });
   }
 });
@@ -127,18 +120,23 @@ browser.tabs.onRemoved.addListener((tabId) => {
   delete privacyData[tabId];
 });
 
-browser.browserAction.onClicked.addListener((tab) => {
-    let tabId = tab.id;
-  
-    if (privacyData[tabId]) {
-      browser.tabs.sendMessage(tabId, {
-        showPrivacyData: true,
-        privacyData: privacyData[tabId]
-      });
-    } else {
-      browser.tabs.sendMessage(tabId, {
-        showPrivacyData: true,
-        privacyData: null
-      });
-    }
-  });
+browser.tabs.onActivated.addListener((activeInfo) => {
+  currentTabId = activeInfo.tabId;
+  resetPrivacyData(currentTabId);
+});
+
+function resetPrivacyData(tabId) {
+  privacyData[tabId] = {
+    thirdPartyConnections: new Set(),
+    hijackingDetected: false,
+    canvasFingerprintDetected: false,
+    localStorageUsage: [],
+    cookies: {
+      firstParty: 0,
+      thirdParty: 0,
+      sessionCookies: 0,
+      persistentCookies: 0
+    },
+    privacyScore: 10
+  };
+}
