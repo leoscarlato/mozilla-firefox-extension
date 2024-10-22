@@ -6,7 +6,7 @@ browser.webRequest.onBeforeRequest.addListener(
     let tabId = details.tabId;
     if (tabId === -1) return;
 
-    let initiator = new URL(details.originUrl || details.initiator || 'about:blank').hostname;
+    let initiator = new URL(details.originUrl || details.initiator).hostname;
     let requestHost = new URL(details.url).hostname;
 
     if (initiator !== requestHost) {
@@ -19,13 +19,14 @@ browser.webRequest.onBeforeRequest.addListener(
           cookies: {
             firstParty: 0,
             thirdParty: 0,
-            sessionCookies: 0,
-            persistentCookies: 0
+            sessionCookies: { firstParty: 0, thirdParty: 0 },
+            persistentCookies: { firstParty: 0, thirdParty: 0 },
           },
-          privacyScore: 10
+          privacyScore: 10,
         };
       }
       privacyData[tabId].thirdPartyConnections.add(requestHost);
+      savePrivacyData(tabId);
     }
   },
   { urls: ["<all_urls>"] },
@@ -44,10 +45,10 @@ browser.runtime.onMessage.addListener((message, sender) => {
       cookies: {
         firstParty: 0,
         thirdParty: 0,
-        sessionCookies: 0,
-        persistentCookies: 0
+        sessionCookies: { firstParty: 0, thirdParty: 0 },
+        persistentCookies: { firstParty: 0, thirdParty: 0 },
       },
-      privacyScore: 10
+      privacyScore: 10,
     };
   }
 
@@ -66,6 +67,7 @@ browser.runtime.onMessage.addListener((message, sender) => {
     updatePrivacyScore(tabId, message.localStorageUsage.length * 0.1);
   }
 
+  savePrivacyData(tabId);
 });
 
 function updatePrivacyScore(tabId, deduction) {
@@ -74,18 +76,25 @@ function updatePrivacyScore(tabId, deduction) {
   if (privacyData[tabId].privacyScore < 0) {
     privacyData[tabId].privacyScore = 0;
   }
-  privacyData[tabId].privacyScore = parseFloat(privacyData[tabId].privacyScore.toFixed(1));
+  privacyData[tabId].privacyScore = parseFloat(
+    privacyData[tabId].privacyScore.toFixed(1)
+  );
+  savePrivacyData(tabId);
+}
+
+function savePrivacyData(tabId) {
+  browser.storage.local.set({ [tabId]: privacyData[tabId] });
 }
 
 browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-  if (changeInfo.status === 'complete') {
+  if (changeInfo.status === "complete") {
     if (!privacyData[tabId]) return;
 
     browser.cookies.getAll({ url: tab.url }).then((cookies) => {
       let firstParty = 0;
       let thirdParty = 0;
-      let sessionCookies = 0;
-      let persistentCookies = 0;
+      let sessionCookies = { firstParty: 0, thirdParty: 0 };
+      let persistentCookies = { firstParty: 0, thirdParty: 0 };
 
       let tabUrl = new URL(tab.url);
       let tabDomain = tabUrl.hostname;
@@ -93,14 +102,18 @@ browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
       cookies.forEach((cookie) => {
         if (cookie.domain.includes(tabDomain)) {
           firstParty++;
+          if (!cookie.expirationDate) {
+            sessionCookies.firstParty++;
+          } else {
+            persistentCookies.firstParty++;
+          }
         } else {
           thirdParty++;
-        }
-
-        if (!cookie.expirationDate) {
-          sessionCookies++;
-        } else {
-          persistentCookies++;
+          if (!cookie.expirationDate) {
+            sessionCookies.thirdParty++;
+          } else {
+            persistentCookies.thirdParty++;
+          }
         }
       });
 
@@ -108,16 +121,18 @@ browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
         firstParty,
         thirdParty,
         sessionCookies,
-        persistentCookies
+        persistentCookies,
       };
 
-      updatePrivacyScore(tabId, thirdParty * 0.2);
+      updatePrivacyScore(tabId, 0.1);
+      savePrivacyData(tabId);
     });
   }
 });
 
 browser.tabs.onRemoved.addListener((tabId) => {
   delete privacyData[tabId];
+  browser.storage.local.remove(tabId.toString());
 });
 
 browser.tabs.onActivated.addListener((activeInfo) => {
@@ -134,9 +149,10 @@ function resetPrivacyData(tabId) {
     cookies: {
       firstParty: 0,
       thirdParty: 0,
-      sessionCookies: 0,
-      persistentCookies: 0
+      sessionCookies: { firstParty: 0, thirdParty: 0 },
+      persistentCookies: { firstParty: 0, thirdParty: 0 },
     },
-    privacyScore: 10
+    privacyScore: 10,
   };
+  savePrivacyData(tabId);
 }

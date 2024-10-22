@@ -1,6 +1,6 @@
 {
     "manifest_version": 2,
-    "name": "Analisador de Privacidade",
+    "name": "Privacy Checker",
     "version": "1.0",
     "description": "Analisa páginas web quanto à privacidade do usuário.",
     "permissions": [
