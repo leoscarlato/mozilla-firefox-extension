@@ -1,35 +1,35 @@
 {
-    "manifest_version": 2,
-    "name": "Privacy Checker",
-    "version": "1.0",
-    "description": "Analisa páginas web quanto à privacidade do usuário.",
-    "permissions": [
-      "webRequest",
-      "webRequestBlocking",
-      "tabs",
-      "cookies",
-      "storage",
-      "<all_urls>"
-    ],
-    "background": {
-      "scripts": ["background.js"]
-    },
-    "content_scripts": [
-      {
-        "matches": ["<all_urls>"],
-        "js": ["content_script.js"],
-        "run_at": "document_start",
-        "all_frames": true
-      }
-    ],
-    "icons": {
+  "manifest_version": 2,
+  "name": "Privacy Checker",
+  "version": "1.0",
+  "description": "Analisa páginas web quanto à privacidade do usuário.",
+  "permissions": [
+    "webRequest",
+    "webRequestBlocking",
+    "tabs",
+    "cookies",
+    "storage",
+    "<all_urls>"
+  ],
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content_script.js"],
+      "run_at": "document_start",
+      "all_frames": true
+    }
+  ],
+  "icons": {
+    "16": "icons/padlock.png"
+  },
+  "browser_action": {
+    "default_icon": {
       "16": "icons/padlock.png"
     },
-    "browser_action": {
-      "default_icon": {
-        "16": "icons/padlock.png"
-      },
-      "default_title": "Privacy Checker",
-      "default_popup": "popup.html"
-    }
+    "default_title": "Privacy Checker",
+    "default_popup": "popup.html"
   }
+}

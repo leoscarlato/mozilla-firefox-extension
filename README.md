@@ -7,18 +7,23 @@
 ## Funcionalidades
 
 ### 1. Monitoramento de Conexões de Terceiros
+
 A extensão detecta e lista todas as conexões de terceiros feitas pela página web, ajudando o usuário a entender quais domínios estão sendo acessados além do domínio principal.
 
 ### 2. Detecção de Hijacking
+
 A extensão monitora tentativas de hijacking, como a substituição da função `alert` do JavaScript, e alerta o usuário caso alguma tentativa seja detectada.
 
 ### 3. Detecção de Canvas Fingerprinting
+
 A extensão detecta tentativas de canvas fingerprinting, uma técnica usada para rastrear usuários através da renderização de gráficos em um elemento `<canvas>`.
 
 ### 4. Monitoramento de Cookies
+
 A extensão monitora e categoriza cookies de primeira e terceira parte, incluindo cookies de sessão e persistentes, fornecendo uma visão detalhada sobre o uso de cookies pela página web.
 
 ### 5. Monitoramento de Local Storage
+
 A extensão lista os itens armazenados no `localStorage` da página web, ajudando o usuário a entender quais dados estão sendo armazenados localmente pelo site.
 
 ## Arquivos Principais

@@ -24,7 +24,8 @@ browser.webRequest.onBeforeRequest.addListener(
     let tabId = details.tabId;
     if (tabId === -1) return;
 
-    let initiator = new URL(details.originUrl || details.initiator || '').hostname;
+    let initiator = new URL(details.originUrl || details.initiator || "")
+      .hostname;
     let requestHost = new URL(details.url).hostname;
 
     if (initiator && initiator !== requestHost) {
@@ -39,7 +40,7 @@ browser.webRequest.onBeforeRequest.addListener(
 
 browser.runtime.onMessage.addListener((message, sender) => {
   let tabId = sender.tab.id;
-  console.log('Mensagem recebida do content script:', message);
+  console.log("Mensagem recebida do content script:", message);
 
   ensurePrivacyData(tabId);
 
@@ -125,4 +126,3 @@ browser.tabs.onRemoved.addListener((tabId) => {
   delete privacyData[tabId];
   browser.storage.local.remove(tabId.toString());
 });
-

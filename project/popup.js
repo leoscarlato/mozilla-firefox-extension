@@ -79,20 +79,20 @@ document.addEventListener("DOMContentLoaded", () => {
               localStorageList.appendChild(li);
             });
 
-            document
-              .querySelectorAll(".category-header")
-              .forEach((header) => {
-                header.addEventListener("click", () => {
-                  const list = header.nextElementSibling;
-                  const arrow = header.querySelector(".dropdown-arrow");
-                  if (list) {
-                    list.classList.toggle("hidden");
-                    arrow.classList.toggle("expanded");
-                  }
-                });
+            document.querySelectorAll(".category-header").forEach((header) => {
+              header.addEventListener("click", () => {
+                const list = header.nextElementSibling;
+                const arrow = header.querySelector(".dropdown-arrow");
+                if (list) {
+                  list.classList.toggle("hidden");
+                  arrow.classList.toggle("expanded");
+                }
               });
+            });
           } else {
-            console.error("Nenhum dado de privacidade encontrado para a aba atual.");
+            console.error(
+              "Nenhum dado de privacidade encontrado para a aba atual."
+            );
           }
         })
         .catch((error) => {
