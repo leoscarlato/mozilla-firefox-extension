@@ -33,3 +33,7 @@ A extensão lista os itens armazenados no `localStorage` da página web, ajudand
 - **popup.js**: script que gerencia a interface do popup da extensão.
 - **popup.html**: estrutura HTML do popup da extensão.
 - **content_script.js**: script injetado nas páginas web para monitorar atividades que impactam a privacidade.
+
+## Como a ferramenta é exibida
+![Privacy Checker](screenshot/Screenshot_31.png)
+![Privacy Checker](screenshot/Screenshot_32.png)
