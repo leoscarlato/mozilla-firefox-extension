@@ -2,7 +2,7 @@
 
 ## Descrição
 
-A **Privacy Checker** é uma extensão para o Mozilla Firefox que analisa páginas web quanto à privacidade do usuário. Ela monitora e avalia diversas atividades que podem impactar a privacidade, fornecendo uma pontuação estimada, a fim de fornecer um panorama mais claro sobre a segurança e privacidade da página web que está sendo visitada.
+**Privacy Checker** é uma extensão para o Mozilla Firefox que analisa páginas web quanto à privacidade do usuário. Ela monitora e avalia diversas atividades que podem impactar a privacidade, fornecendo uma pontuação estimada, a fim de fornecer um panorama mais claro sobre a segurança e privacidade da página web que está sendo visitada.
 
 ## Funcionalidades
 
@@ -28,14 +28,3 @@ A extensão lista os itens armazenados no `localStorage` da página web, ajudand
 - **popup.js**: script que gerencia a interface do popup da extensão.
 - **popup.html**: estrutura HTML do popup da extensão.
 - **content_script.js**: script injetado nas páginas web para monitorar atividades que impactam a privacidade.
-
-## Permissões Necessárias
-
-A extensão requer as seguintes permissões para funcionar corretamente:
-
-- `webRequest`
-- `webRequestBlocking`
-- `tabs`
-- `cookies`
-- `storage`
-- `<all_urls>`

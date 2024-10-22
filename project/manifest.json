@@ -18,7 +18,8 @@
       {
         "matches": ["<all_urls>"],
         "js": ["content_script.js"],
-        "run_at": "document_start"
+        "run_at": "document_start",
+        "all_frames": true
       }
     ],
     "icons": {
@@ -28,7 +29,7 @@
       "default_icon": {
         "16": "icons/padlock.png"
       },
-      "default_title": "Analisador de Privacidade",
+      "default_title": "Privacy Checker",
       "default_popup": "popup.html"
     }
   }

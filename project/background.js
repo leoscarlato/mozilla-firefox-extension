@@ -1,41 +1,7 @@
-window.privacyData = {};
-window.currentTabId = null;
+let privacyData = {};
+let currentTabId = null;
 
-browser.webRequest.onBeforeRequest.addListener(
-  (details) => {
-    let tabId = details.tabId;
-    if (tabId === -1) return;
-
-    let initiator = new URL(details.originUrl || details.initiator).hostname;
-    let requestHost = new URL(details.url).hostname;
-
-    if (initiator !== requestHost) {
-      if (!privacyData[tabId]) {
-        privacyData[tabId] = {
-          thirdPartyConnections: new Set(),
-          hijackingDetected: false,
-          canvasFingerprintDetected: false,
-          localStorageUsage: [],
-          cookies: {
-            firstParty: 0,
-            thirdParty: 0,
-            sessionCookies: { firstParty: 0, thirdParty: 0 },
-            persistentCookies: { firstParty: 0, thirdParty: 0 },
-          },
-          privacyScore: 10,
-        };
-      }
-      privacyData[tabId].thirdPartyConnections.add(requestHost);
-      savePrivacyData(tabId);
-    }
-  },
-  { urls: ["<all_urls>"] },
-  []
-);
-
-browser.runtime.onMessage.addListener((message, sender) => {
-  let tabId = sender.tab.id;
-
+function ensurePrivacyData(tabId) {
   if (!privacyData[tabId]) {
     privacyData[tabId] = {
       thirdPartyConnections: new Set(),
@@ -51,6 +17,31 @@ browser.runtime.onMessage.addListener((message, sender) => {
       privacyScore: 10,
     };
   }
+}
+
+browser.webRequest.onBeforeRequest.addListener(
+  (details) => {
+    let tabId = details.tabId;
+    if (tabId === -1) return;
+
+    let initiator = new URL(details.originUrl || details.initiator || '').hostname;
+    let requestHost = new URL(details.url).hostname;
+
+    if (initiator && initiator !== requestHost) {
+      ensurePrivacyData(tabId);
+      privacyData[tabId].thirdPartyConnections.add(requestHost);
+      savePrivacyData(tabId);
+    }
+  },
+  { urls: ["<all_urls>"] },
+  []
+);
+
+browser.runtime.onMessage.addListener((message, sender) => {
+  let tabId = sender.tab.id;
+  console.log('Mensagem recebida do content script:', message);
+
+  ensurePrivacyData(tabId);
 
   if (message.hijackingDetected) {
     privacyData[tabId].hijackingDetected = true;
@@ -88,7 +79,7 @@ function savePrivacyData(tabId) {
 
 browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (changeInfo.status === "complete") {
-    if (!privacyData[tabId]) return;
+    ensurePrivacyData(tabId);
 
     browser.cookies.getAll({ url: tab.url }).then((cookies) => {
       let firstParty = 0;
@@ -135,24 +126,3 @@ browser.tabs.onRemoved.addListener((tabId) => {
   browser.storage.local.remove(tabId.toString());
 });
 
-browser.tabs.onActivated.addListener((activeInfo) => {
-  currentTabId = activeInfo.tabId;
-  resetPrivacyData(currentTabId);
-});
-
-function resetPrivacyData(tabId) {
-  privacyData[tabId] = {
-    thirdPartyConnections: new Set(),
-    hijackingDetected: false,
-    canvasFingerprintDetected: false,
-    localStorageUsage: [],
-    cookies: {
-      firstParty: 0,
-      thirdParty: 0,
-      sessionCookies: { firstParty: 0, thirdParty: 0 },
-      persistentCookies: { firstParty: 0, thirdParty: 0 },
-    },
-    privacyScore: 10,
-  };
-  savePrivacyData(tabId);
-}

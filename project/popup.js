@@ -1,19 +1,14 @@
 document.addEventListener("DOMContentLoaded", () => {
-  browser.runtime
-    .getBackgroundPage()
-    .then((backgroundPage) => {
-      if (!backgroundPage.privacyData) {
-        console.error("privacyData is not defined in the background page.");
-        return;
-      }
-
-      const currentTabId = backgroundPage.currentTabId;
+  browser.tabs
+    .query({ active: true, currentWindow: true })
+    .then((tabs) => {
+      const currentTabId = tabs[0].id;
 
       browser.storage.local
         .get(currentTabId.toString())
         .then((result) => {
           const privacyData = result[currentTabId];
-          console.log("Privacy Data:", privacyData);
+          console.log("Dados de privacidade:", privacyData);
 
           if (privacyData) {
             const privacyScore = privacyData.privacyScore.toFixed(1);
@@ -84,25 +79,27 @@ document.addEventListener("DOMContentLoaded", () => {
               localStorageList.appendChild(li);
             });
 
-            document.querySelectorAll(".category-header").forEach((header) => {
-              header.addEventListener("click", () => {
-                const list = header.nextElementSibling;
-                const arrow = header.querySelector(".dropdown-arrow");
-                if (list) {
-                  list.classList.toggle("hidden");
-                  arrow.classList.toggle("expanded");
-                }
+            document
+              .querySelectorAll(".category-header")
+              .forEach((header) => {
+                header.addEventListener("click", () => {
+                  const list = header.nextElementSibling;
+                  const arrow = header.querySelector(".dropdown-arrow");
+                  if (list) {
+                    list.classList.toggle("hidden");
+                    arrow.classList.toggle("expanded");
+                  }
+                });
               });
-            });
           } else {
-            console.error("No privacy data found for the current tab.");
+            console.error("Nenhum dado de privacidade encontrado para a aba atual.");
           }
         })
         .catch((error) => {
-          console.error("Error accessing storage:", error);
+          console.error("Erro ao acessar o storage:", error);
         });
     })
     .catch((error) => {
-      console.error("Error accessing background page:", error);
+      console.error("Erro ao obter a aba atual:", error);
     });
 });
