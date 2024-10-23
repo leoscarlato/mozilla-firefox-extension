@@ -48,9 +48,14 @@ A extensão atribui uma pontuação de privacidade à página web com base em cr
 | Cookies de Terceiros          | 0.1               | 
 
 
-
-
-
 ## Como a ferramenta é exibida
 ![Privacy Checker](screenshot/Screenshot_31.png)
 ![Privacy Checker](screenshot/Screenshot_32.png)
+
+## Referências
+
+- [WebExtensions API](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions)
+- [Sua primeira extensão do Firefox](https://developer.mozilla.org/pt-BR/docs/Mozilla/Add-ons/WebExtensions/Your_first_WebExtension)
+- [Anatomia de uma Web Extension](https://developer.mozilla.org/pt-BR/docs/Mozilla/Add-ons/WebExtensions/Anatomy_of_a_WebExtension)
+- [Exemplo de extensões](https://developer.mozilla.org/pt-BR/docs/Mozilla/Add-ons/WebExtensions/Examples)
+- ChatGPT
