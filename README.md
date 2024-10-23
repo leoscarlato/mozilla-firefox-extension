@@ -34,6 +34,23 @@ A extensão lista os itens armazenados no `localStorage` da página web, ajudand
 - **popup.html**: estrutura HTML do popup da extensão.
 - **content_script.js**: script injetado nas páginas web para monitorar atividades que impactam a privacidade.
 
+## Sistema de pontuação
+
+A extensão atribui uma pontuação de privacidade à página web com base em critérios específicos. Ela é calculada com base nas informações abaixo, dado que o máximo de pontos que uma página pode ter é 10.0, isto é, quando a página não apresenta nenhum risco à privacidade do usuário, e o mínimo é 0.0, quando a página é considerada extremamente invasiva.
+
+
+| Critério                      | Dedução de Pontos |
+|-------------------------------|-------------------|
+| Conexões de Terceiros         | 0.1 por conexão   | 
+| Hijacking Detectado           | 2.0               | 
+| Canvas Fingerprinting Detectado| 1.5               | 
+| Uso de Local Storage          | 0.1 por item      | 
+| Cookies de Terceiros          | 0.1               | 
+
+
+
+
+
 ## Como a ferramenta é exibida
 ![Privacy Checker](screenshot/Screenshot_31.png)
 ![Privacy Checker](screenshot/Screenshot_32.png)
